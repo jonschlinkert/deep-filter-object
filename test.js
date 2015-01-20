@@ -1,7 +1,7 @@
 /*!
  * deep-filter-object <https://github.com/jonschlinkert/deep-filter-object>
  *
- * Copyright (c) 2014 Jon Schlinkert, contributors.
+ * Copyright (c) 2014-2015, Jon Schlinkert.
  * Licensed under the MIT License
  */
 
@@ -12,6 +12,16 @@ var should = require('should');
 var deepFilter = require('./');
 
 describe('deep filter', function () {
+  it('should use a callback function for filtering:', function () {
+    deepFilter({a: 'a', b: 'b', c: 'c'}, function (value, key, obj, i) {
+      return key === 'b';
+    }).should.eql({b: 'b'});
+
+    deepFilter({a: 'a', b: {c: 'c', d: {e: {c: 'c', f: 'f'}}}, c: 'c'}, function (value, key, obj) {
+      return key !== 'c';
+    }).should.eql({a: 'a', b: {d: {e: {f: 'f'}}}});
+  });
+
   it('should deeply filter keys using the given glob patterns', function () {
     var obj1 = deepFilter({a: 'a', b: {a: 'a', b: {a: 'a', b: 'b', c: 'c'}}}, '*');
     obj1.should.eql({a: 'a', b: {a: 'a', b: {a: 'a', b: 'b', c: 'c'}}});
